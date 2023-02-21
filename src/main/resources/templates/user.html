@@ -17,10 +17,7 @@
     <div class="col-12">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-12 p-2 bg-dark text-white ">
-                    <a th:text="*{userModel.email}" class="font-weight-bold text-white" id="headerUsername"></a>
-                    <a> with roles:</a>
-                    <a th:text="*{userModel.roles}" id="headerRoles"></a>
+                <div class="col-sm-12 p-2 bg-dark text-white " id="headerUsername">
                     <a th:href="@{/logout}" class="float-right text-secondary"> Logout </a>
                 </div>
             </div>
@@ -71,15 +68,7 @@
                                             <th scope="col">Role</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td th:text="${userModel.id}"/>
-                                            <td th:text="${userModel.getUsername()}"/>
-                                            <td th:text="${userModel.getLastName()}"/>
-                                            <td th:text="${userModel.age}"/>
-                                            <td th:text="${userModel.getEmail()}"/>
-                                            <td th:text="${userModel.getRoles()}"/>
-                                        </tr>
+                                        <tbody id="tbodyUserTable">
                                         </tbody>
                                     </table>
                                 </div>
@@ -103,5 +92,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
+        <script type="text/javascript" src="../static/otherInfo.js" th:src="@{/otherInfo.js}"></script>
 </body>
 </html>

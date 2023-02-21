@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -7,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.entenies.User;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import java.util.List;
@@ -15,16 +17,13 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
 
+    @Autowired
+    private UserRepository userRepository;
 
-    private final UserRepository userRepository;
-
-
-    private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RoleRepository roleRepository;
 
 
     public Optional<User> findByUserName(String name) {
@@ -32,7 +31,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = findByUserName(username);
 
@@ -61,6 +60,7 @@ public class UserService implements UserDetailsService {
         if (userFromDB.isPresent()) {
             return false;
         }
+        roleRepository.saveAll(user.getRoles());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.saveAndFlush(user);
         return true;
@@ -72,12 +72,11 @@ public class UserService implements UserDetailsService {
             userRepository.deleteById(userId);
     }
 
-    public void update(User user) {;
-        if (user.getPassword().length() > 10) {
-            userRepository.save(user);
-        } else{
+    public void update(User user) {
+        if (!user.getPassword().equals(findUserById(user.getId()).getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
+        userRepository.saveAndFlush(user);
     }
 
 }
