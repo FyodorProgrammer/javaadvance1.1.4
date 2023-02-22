@@ -10,6 +10,7 @@ import ru.kata.spring.boot_security.demo.services.UserService;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @RestController
@@ -60,7 +61,7 @@ public class springRestController {
     @PutMapping("/users")
     public User updateUser(@RequestBody User user) {
         if (user.getRoles().isEmpty()) {
-            List<Role> roles = userService.findUserById(user.getId()).getRoles();
+            Set<Role> roles = userService.findUserById(user.getId()).getRoles();
             user.setRoles(roles);
         }
         userService.update(user);
