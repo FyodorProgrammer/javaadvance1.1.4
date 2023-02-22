@@ -21,7 +21,7 @@ public class User implements UserDetails {
 
 
 
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
