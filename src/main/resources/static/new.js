@@ -55,7 +55,6 @@ async function createUser() {
         });
         const result = await res.json();
         addUserInTable(result);
-
     }
 
         inputUsername.value = ''
