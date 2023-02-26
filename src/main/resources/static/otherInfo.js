@@ -1,57 +1,33 @@
 async function dataFilling() {
-    let principal = await fetch("http://localhost:8080/api/principal").then(function(response) {
-        response.json().then(function(data) {
-            navbarData(data);
-            userTableData(data);
+    const principal = await fetch("/api/principal");
+    document.getElementById('tbodyUserTable').innerHTML = '';
+    if (principal.ok) {
+        let user = await principal.json();
+        userToHTML(user);
 
-        })
-    }).catch(function(error) {
-        console.log(error)
-    });
+    } else {
+        alert(`Error, ${page.status}`);
+    }
 
 }
 
-function navbarData({ id, username, lastName, age, email, roles }) {
-    const headerUsername = document.getElementById('headerUsername');
-
+function userToHTML({ id, username, lastName, age, email, roles }) {
+    let tbody = document.getElementById('tbodyUserTable');
     let strRole = '';
 
     roles.forEach((role) => {
         strRole += role.name.substring(5) + ' ';
     })
 
-    headerUsername.insertAdjacentHTML('beforeend', `
-        <a  class="font-weight-bold text-white" id="headerUsername">${email}</a>
-        <a> with roles:</a>
-        <a  id="headerRoles">${strRole}</a>
-    `)
+    tbody.insertAdjacentHTML('beforeend', `
+    <tr id="user${id}" >
+        <td>${id}</td>
+        <td>${username}</td>
+        <td>${lastName}</td>
+        <td>${age}</td>
+        <td>${email}</td>
+        <td>${strRole}</td>
+    </tr>`)
 }
 
-
-function userTableData({ id, username, lastName, age, email, roles }) {
-    const userTable = document.getElementById('tbodyUserTable');
-    
-    let strRole = '';
-
-    roles.forEach((role) => {
-        strRole += role.name.substring(5) + ' ';
-    })
-
-    userTable.insertAdjacentHTML('beforeend', `
-        <tr>
-            <td>${id}</td>
-            <td>${username}</td>
-            <td>${lastName}</td>
-            <td>${age}</td>
-            <td>${email}</td>
-            <td>${strRole}</td>
-        </tr>
-        `)
-
-}
-
-
-
-
-
-window.addEventListener('DOMContentLoaded', dataFilling);
+dataFilling();

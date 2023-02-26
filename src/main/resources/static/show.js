@@ -1,18 +1,21 @@
-async function getAllUser() {
-    const res = await fetch("http://localhost:8080/api/users");
-    const users = await res.json();
 
-    users.forEach(user => {
-        usersToHTML(user);   
-    });
+async function getAllUser() {
+    const res = await fetch("/api/users");
+    document.getElementById('data').innerHTML = '';
+    if (res.ok) {
+        let users = await res.json();
+        users.forEach(user => {
+            usersToHTML(user);
+        });
+
+    } else {
+        alert(`Error, ${page.status}`);
+    }
 }
 
 
-window.addEventListener('DOMContentLoaded', getAllUser);
-
-
 function usersToHTML({ id, username, lastName, age, email, roles }) {
-    const tbody = document.getElementById('data');
+    let tbody = document.getElementById('data');
     let strRole = '';
 
     roles.forEach((role) => {
@@ -46,3 +49,4 @@ function usersToHTML({ id, username, lastName, age, email, roles }) {
         </td>
     </tr>`)
 }
+getAllUser();

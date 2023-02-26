@@ -1,6 +1,6 @@
 async function deleteUserData(id) {
 
-    let href = `http://localhost:8080/api/users/${id}`
+    let href = `/api/users/${id}`
         $.get(href, function (user) {
             $('.myDeleteForm #dId').val(user.id);
             $('.myDeleteForm #dUsername').val(user.username);
@@ -19,20 +19,22 @@ async function deleteUserData(id) {
     
 
     document.getElementById('delete-user-button').addEventListener('click', async () =>{
-            const res = await fetch(`http://localhost:8080/api/users/${id}`, {
+            const res = {
             method: "DELETE",
             headers: {
                 'Content-Type': 'application/json',
             }
+        };
+
+        await fetch(href, res).then(() => {
+            $('#delete-close-modal').click();
+            getAllUser();
         });
-        document.getElementById(`user${id}`).remove();
+
 
 
         $('#deleteModal').modal('toggle');
 
     })
-
-    // $('.myDeleteForm #deleteModal').modal();
-    // $('.myDeleteForm #deleteModal').close();
    
 }

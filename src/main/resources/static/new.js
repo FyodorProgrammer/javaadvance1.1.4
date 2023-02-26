@@ -22,13 +22,6 @@ document.getElementById('addNewUser').addEventListener('click', createUser)
 
 async function createUser() {
 
-    setTimeout(() => {
-        document.querySelector('#add-complete').classList.add('show');
-    }, 500);
-    setTimeout(() => {
-        document.querySelector('#add-complete').classList.remove('show');
-    }, 2000);
-
     const inputUsername = document.getElementById('nUsername');
     const inputLastName = document.getElementById('nLastName');
     const inputAge = document.getElementById('nAge');
@@ -44,24 +37,28 @@ async function createUser() {
     let listRoles = roleArray(document.getElementById('nRoles'));
    
 
-    if (username && lastName && age && email && password && (listRoles.length != 0)) {
+    if (username && lastName && age && email && password && (listRoles.length !== 0)) {
 
-        let res = await fetch("http://localhost:8080/api/users", {
+        let res = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ username, lastName, age, email, password, roles: listRoles })
+        };
+
+        await fetch('/api/users', res).then(() => {
+            document.forms["newUserForm"].reset();
+            getAllUser();
+            $("#home-tab").click();
         });
-        const result = await res.json();
-        addUserInTable(result);
     }
 
-        inputUsername.value = ''
-        inputLastName.value = ''
-        inputAge.value = ''
-        inputEmail.value =''
-        inputPassword.value = ''
+
+
+
+
+
 
 }
 
@@ -87,7 +84,7 @@ let roleArray = (options) => {
 async function addUserInTable(result) {
     const id = result.id;
     console.log('hi');
-    const res = await fetch(`http://localhost:8080/api/users/${id}`);
+    const res = await fetch(`/api/users/${id}`);
     const user = await res.json();
 
     let strRoles = '';

@@ -11,7 +11,6 @@ import ru.kata.spring.boot_security.demo.services.UserService;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 
@@ -27,36 +26,38 @@ public class springRestController {
     }
 
     @GetMapping("/principal")
-    public ResponseEntity<?> getAuthorizedUser(Principal principal) {
-        return new ResponseEntity<>(userService.findByUserName(principal.getName()).get(), HttpStatus.OK);
+    public ResponseEntity<User> getAuthorizedUser(Principal principal) {
+        User user = userService.findByUserName(principal.getName()).get();
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-
-
     @GetMapping("/roles")
-    public ResponseEntity<?> showAllRoles() {
-        return new ResponseEntity<>(roleService.findAllRoles(), HttpStatus.OK);
+    public ResponseEntity<List<Role>> showAllRoles() {
+        List<Role> listRoles = roleService.findAllRoles();
+        return new ResponseEntity<>(listRoles, HttpStatus.OK);
     }
 
     @GetMapping("/users")
-    public ResponseEntity<?> showAllUsers() {
-        return new ResponseEntity<>(userService.allUser(), HttpStatus.OK);
+    public ResponseEntity<List<User>> showAllUsers() {
+        List<User> listUsers = userService.allUser();
+        return new ResponseEntity<>(listUsers, HttpStatus.OK);
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        User user = userService.findUserById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
 
     @PostMapping("/users")
-    public ResponseEntity<?> addNewUser(@RequestBody User user) {
+    public ResponseEntity<HttpStatus> addNewUser(@RequestBody User user) {
         userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/users")
-    public ResponseEntity<?> updateUser(@RequestBody User user) {
+    public ResponseEntity<HttpStatus> updateUser(@RequestBody User user) {
         if (user.getRoles().isEmpty()) {
             Set<Role> roles = userService.findUserById(user.getId()).getRoles();
             user.setRoles(roles);
@@ -66,7 +67,7 @@ public class springRestController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
